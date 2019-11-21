@@ -1,0 +1,24 @@
+{
+  "name": "onsitego-api-automation",
+  "version": "1.0.0",
+  "description": "onsitego api automation",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lohcaiz/OnsiteGO-API-Automation.git"
+  },
+  "dependencies": {
+    "newman": "4.4.1",
+    "newman-reporter-htmlextra": "1.6.10",
+    "newman-reporter-htmlfull2": "2.0.2"
+  },
+  "author": "Lokesh",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lohcaiz/OnsiteGO-API-Automation/issues"
+  },
+  "homepage": "https://github.com/lohcaiz/OnsiteGO-API-Automation#readme"
+}
