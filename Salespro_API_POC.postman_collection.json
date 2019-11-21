@@ -1,0 +1,1016 @@
+{
+	"info": {
+		"_postman_id": "9d09c541-a8c4-4940-8e59-53ed19f642f0",
+		"name": "Salespro_API_POC",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Fetch_User_Info",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e4ae06b2-18ac-40c5-a3fd-e049bdfe0c2d",
+						"exec": [
+							"var response=JSON.parse(responseBody);",
+							"pm.environment.set(\"channel_name\", response.channel_name);",
+							"",
+							"var response1=JSON.parse(responseBody);",
+							"pm.environment.set(\"role\", response1.retailer_role);",
+							"",
+							"var channel_names=response.channel_name;",
+							"var roles=response1.retailer_role;",
+							"",
+							"/*TESTS*/",
+							"",
+							"pm.test(\"Channel Name :  \" +channel_names , function () {",
+							"    pm.expect(pm.response.text()).to.include(\"ee1c8a0c29dbe163ec5f4984a13e4f31f4aef3b8\");",
+							"});",
+							"",
+							"pm.test(\"Role :  \" +roles , function () {",
+							"    pm.expect(pm.response.text()).to.include(\"ee1c8a0c29dbe163ec5f4984a13e4f31f4aef3b8\");",
+							"});",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "Token 8aea9960bff8537c6daafdb08347e0f915e5b8ca"
+					},
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/api/order/generate_otp/?registered_phone=8940006777&app=RN&type=login",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"order",
+						"generate_otp",
+						""
+					],
+					"query": [
+						{
+							"key": "registered_phone",
+							"value": "8940006777"
+						},
+						{
+							"key": "app",
+							"value": "RN"
+						},
+						{
+							"key": "type",
+							"value": "login"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List_Plans",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "738faa30-1369-4431-8738-ea732c4c4e73",
+						"exec": [
+							"/*TESTS*/",
+							"",
+							"pm.test(\"Listed Plans Successfully\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"product_list\");",
+							"});",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Token ee1c8a0c29dbe163ec5f4984a13e4f31f4aef3b8",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/api/order/product_list/?registered_phone=8940006777&retailer_role=retailer",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"order",
+						"product_list",
+						""
+					],
+					"query": [
+						{
+							"key": "registered_phone",
+							"value": "8940006777"
+						},
+						{
+							"key": "retailer_role",
+							"value": "retailer"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add_To_Cart",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "bcc7365c-a378-4e72-b1ab-01d0b8971575",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"pm.environment.set('cart_id', jsonData.cart_id);\r",
+							"\r",
+							"/*TESTS*/\r",
+							"\r",
+							"pm.test(\"Add To Cart Successful\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"ADD_TO_CART_SUCCESS\");\r",
+							"});\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "70bfae10-7a78-4493-b339-ce7591da6a14",
+						"exec": [
+							"const editdate = require('moment');\r",
+							"pm.globals.set(\"timestamp\", editdate().format(\"YYYY-MM-DD\"));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Token ee1c8a0c29dbe163ec5f4984a13e4f31f4aef3b8",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\t\"system_date\": \"{{timestamp}}\",\r\n\t\"price\": \"49\",\r\n\t\"phone\": \"8940006777\",\r\n\t\"onsitego_sku_id\": \"589\",\r\n\t\"plan_price\": \"384.00\",\r\n\t\"category\": \"Mobile Phone\",\r\n\t\"sub_category\": \"Mobiles\",\r\n\t\"to_price\": 5000,\r\n\t\"from_price\": 0,\r\n\t\"validity\": 1,\r\n\t\"validity_unit\": \"Y\",\r\n\t\"product_type\": \"Screen Protection\",\r\n\t\"registered_phone\": \"8940006777\",\r\n\t\"retailer_role\": \"retailer\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/api/order/add_cart",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"order",
+						"add_cart"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Checkout",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "5604d918-c82c-4e72-9397-2a363a902136",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"pm.environment.set(\"order_id\", jsonData.order_id);",
+							"",
+							"",
+							"/*TESTS*/",
+							"",
+							"pm.test(\"Checkout Successful\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"CHECKOUT_SUCCESS\");",
+							"});",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Token ee1c8a0c29dbe163ec5f4984a13e4f31f4aef3b8",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "",
+						"value": "{{cart_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\t\"system_date\": \"{{timestamp}}\",\r\n\t\"plan_purchase_date\": \"{{timestamp}}\",\r\n\t\"invoice_date\": \"{{timestamp}}\",\r\n\t\"phone\": \"8940006777\",\r\n\t\"manufacturer_warranty_in_months\": 12,\r\n\t\"price\": \"500\",\r\n\t\"onsitego_sku_id\": \"589\",\r\n\t\"plan_price\": \"384.00\",\r\n\t\"category\": \"Mobile Phone\",\r\n\t\"sub_category\": \"Mobiles\",\r\n\t\"from_price\": 0,\r\n\t\"to_price\": 5000,\r\n\t\"validity\": 1,\r\n\t\"validity_unit\": \"Y\",\r\n\t\"product_type\": \"Screen Protection\",\r\n\t\"registered_phone\": \"8940006777\",\r\n\t\"retailer_role\": \"retailer\",\r\n\t\"cart_id\": {{cart_id}}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/api/order/checkout",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"order",
+						"checkout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Generate_OTP_To_Pay_From_Wallet",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "8fac4a5b-3ad5-4ad9-9710-f7eb566039f5",
+						"exec": [
+							"/*TESTS*/",
+							"",
+							"pm.test(\"OTP Triggered\", function () {",
+							"pm.expect(pm.response.text()).to.include(\"ACTIVATED\");",
+							"});",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Token ee1c8a0c29dbe163ec5f4984a13e4f31f4aef3b8",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/api/order/generate_otp/?registered_phone=8940006777&app=RN&type=seller_wallet&deduction_amount=384.00",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"order",
+						"generate_otp",
+						""
+					],
+					"query": [
+						{
+							"key": "registered_phone",
+							"value": "8940006777"
+						},
+						{
+							"key": "app",
+							"value": "RN"
+						},
+						{
+							"key": "type",
+							"value": "seller_wallet"
+						},
+						{
+							"key": "deduction_amount",
+							"value": "384.00"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Transfer_Amount",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "dbfe7f25-5ee9-4bee-90f9-5cb0a780e459",
+						"exec": [
+							"var jsonData=JSON.parse(responseBody);",
+							"pm.environment.set(\"retailer_payment_transfer_ids\", jsonData.retailer_payment_transfer_ids);",
+							"",
+							"var response=jsonData.retailer_payment_transfer_ids;",
+							"",
+							"",
+							"/*TESTS*/",
+							"",
+							"pm.test(\"Transferred To Retailer Payment Id:   \" +response, function () {",
+							"    pm.expect(pm.response.text()).to.include(\"AMOUNT_TRANSFERRED\");",
+							"});",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"    "
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Token ee1c8a0c29dbe163ec5f4984a13e4f31f4aef3b8",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\t\t    \"retailer_id\": \"13358\",\n\t\t\t    \"order_id\": {{order_id}},\n\t\t\t    \"registered_phone\": \"8940006777\",\n\t\t\t    \"gateway\": \"Razorpay\",\n\t\t\t    \"transfer_amount\": \"384.00\",\n\t\t\t    \"type\": \"order_create_transfer\",\n\t\t\t    \"amount_distribution\": null,\n\t\t\t    \"from_wallet\": \"cust_Df3AmBP17GkB40\",\n\t\t\t    \"to_wallet\": null,\n\t\t\t    \"to_account\": null,\n\t\t\t    \"notes\": {\n\t\t\t\t\"deducted_from\": \"cust_Df3AmBP17GkB40\"\n\t\t\t    }\n\t\t\t}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/api/salespro/transfer/",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"salespro",
+						"transfer",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Wallet_Balance",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "913be4fe-cd2e-44cc-9887-7549bd604155",
+						"exec": [
+							"/*TESTS*/",
+							"var response=JSON.parse(responseBody);",
+							"",
+							"pm.environment.set(\"balance\", response.balance);",
+							"",
+							"var balance1=response.balance;",
+							"",
+							"",
+							"pm.test(\"Wallet Balance:    \"+balance1, function () {",
+							"    pm.expect(pm.response.text()).to.include(\"balance\");",
+							"});",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Basic cnpwX3Rlc3RfZmpzRDdONDNIZFhhQU46SEY3WVBLZHdXcTR5ME0wbUFDNGFZR1BK",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://api.razorpay.com/v1/customers/cust_Df3AmBP17GkB40/balance",
+					"protocol": "https",
+					"host": [
+						"api",
+						"razorpay",
+						"com"
+					],
+					"path": [
+						"v1",
+						"customers",
+						"cust_Df3AmBP17GkB40",
+						"balance"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fetch_Payment_Details",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3c7022fd-e08a-486e-a7d7-028d22d974bd",
+						"exec": [
+							"var payment_transfer_id=JSON.parse(responseBody);",
+							"pm.environment.set(\"payment_id\", payment_transfer_id.retailer_payment_details[0].payment_id);",
+							"",
+							"",
+							"/*Reference To Wait Call*/",
+							"/*if(payment_transfer_id.retailer_payment_details[0].status==\"pending\"){",
+							"",
+							"  setTimeout(function(){",
+							"          console.log(\"Sleeping for 5 seconds before next request.\");",
+							"  }, 5000);",
+							"",
+							"  postman.setNextRequest(\"Create_Order\");",
+							"",
+							"}*/",
+							"",
+							"",
+							"/*TESTS*/",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "552f5f1d-7d58-4693-9ab2-016dd9f30fa8",
+						"exec": [
+							"setTimeout(function(){",
+							"          console.log(\"Waiting For Payment Process\");",
+							"  }, 3000);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Token ee1c8a0c29dbe163ec5f4984a13e4f31f4aef3b8",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\t\"registered_phone\": \"8940006777\",\r\n\t\"retailer_payment_ids\": [{{retailer_payment_transfer_ids}}]\r\n\t\r\n\t\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://ec2-54-87-249-92.compute-1.amazonaws.com/api/salespro/fetch_payment_details",
+					"protocol": "http",
+					"host": [
+						"ec2-54-87-249-92",
+						"compute-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"api",
+						"salespro",
+						"fetch_payment_details"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create_Order",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "98378df2-0e3b-4cf9-93f7-820a7117efad",
+						"exec": [
+							"var order_sid=JSON.parse(responseBody);",
+							"",
+							"pm.environment.set(\"osid\", order_sid.osid);",
+							"",
+							"/*TESTS*/",
+							"pm.test(\"Order Created Successfully\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"CREATE_SUCCESS\");",
+							"});",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Token ee1c8a0c29dbe163ec5f4984a13e4f31f4aef3b8",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\t\t    \"system_date\": \"{{timestamp}}\",\n\t\t\t\t\"plan_purchase_date\": \"{{timestamp}}\",\n\t\t\t\t\"invoice_date\": \"{{timestamp}}\",\n\t\t\t    \"price\": \"4999\",\n\t\t\t    \"manufacturer_warranty_in_months\": 12,\n\t\t\t    \"phone\": \"8940006777\",\n\t\t\t    \"additional_details\": {\n\t\t\t\t\"payment_id\": \"{{payment_id}}\",\n\t\t\t\t\"txn_id\": \"{{payment_id}}\",\n\t\t\t\t\"dealer_code\": \"\",\n\t\t\t\t\"version\": \"2.0.71-beta\"\n\t\t\t    },\n\t\t\t    \"pg_type\": \"RAZOR PAY\",\n\t\t\t    \"payment_status\": \"SUCCESS\",\n\t\t\t    \"channel_name\": \"hdb-spro\",\n\t\t\t    \"channel_id\": 34,\n\t\t\t    \"source\": \"SALES_PRO_APP\",\n\t\t\t    \"txnid\": \"{{payment_id}}\",\n\t\t\t    \"mode\": \"seller wallet\",\n\t\t\t    \"order_id\": {{order_id}},\n\t\t\t    \"onsitego_sku_id\": \"589\",\n\t\t\t    \"plan_price\": \"384.00\",\n\t\t\t\t\"category\": \"Mobile Phone\",\n\t\t\t\t\"sub_category\": \"Mobiles\",\n\t\t\t\t\"to_price\": 5000,\n\t\t\t\t\"from_price\": 0,\n\t\t\t\t\"validity\": 1,\n\t\t\t\t\"validity_unit\": \"Y\",\n\t\t\t\t\"product_type\": \"Screen Protection\",\n\t\t\t\t\"registered_phone\": \"8940006777\",\n\t\t\t\t\"retailer_role\": \"retailer\",\n\t\t\t    \"cart_id\": {{cart_id}}\n\t\t\t}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://ec2-54-87-249-92.compute-1.amazonaws.com/api/order/create",
+					"protocol": "http",
+					"host": [
+						"ec2-54-87-249-92",
+						"compute-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"api",
+						"order",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Payment_Status",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d4035fbd-9899-440a-93e9-8970bf3eb40d",
+						"exec": [
+							"",
+							"",
+							"/*TESTS*/",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Payment Fetched Successfully\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"PAYMENTS_FETCHING_SUCCESS\");",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Token ee1c8a0c29dbe163ec5f4984a13e4f31f4aef3b8",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://ec2-54-87-249-92.compute-1.amazonaws.com/api/salespro/fetch_all_payments/?registered_phone=8940006777&offset=1&last_id=",
+					"protocol": "http",
+					"host": [
+						"ec2-54-87-249-92",
+						"compute-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"api",
+						"salespro",
+						"fetch_all_payments",
+						""
+					],
+					"query": [
+						{
+							"key": "registered_phone",
+							"value": "8940006777"
+						},
+						{
+							"key": "offset",
+							"value": "1"
+						},
+						{
+							"key": "last_id",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Order_Details",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1d42e4d6-9196-4132-85f3-e64470cdbf33",
+						"exec": [
+							"/*TESTS*/",
+							"",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Token ee1c8a0c29dbe163ec5f4984a13e4f31f4aef3b8",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://ec2-54-87-249-92.compute-1.amazonaws.com/api/order/order_list/?registered_phone=8940006777&retailer_role=retailer&offset=30&type=pagination&order_id={{order_id}}",
+					"protocol": "http",
+					"host": [
+						"ec2-54-87-249-92",
+						"compute-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"api",
+						"order",
+						"order_list",
+						""
+					],
+					"query": [
+						{
+							"key": "registered_phone",
+							"value": "8940006777"
+						},
+						{
+							"key": "retailer_role",
+							"value": "retailer"
+						},
+						{
+							"key": "offset",
+							"value": "30"
+						},
+						{
+							"key": "type",
+							"value": "pagination"
+						},
+						{
+							"key": "order_id",
+							"value": "{{order_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Edit_order",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "75a9dff5-8fa7-4491-a126-7a2ecb4ea1fb",
+						"exec": [
+							"",
+							"",
+							"/*TESTS*/",
+							"",
+							"pm.test(\"Order Edited Successfully\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"EDIT_SUCCESS\");",
+							"});",
+							"",
+							"",
+							"pm.test(\"Invoice Link Is Available\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"https://staging2-media.s3.amazonaws.com\");",
+							"    ",
+							"});",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Token ee1c8a0c29dbe163ec5f4984a13e4f31f4aef3b8",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\t\t     \"system_date\": \"{{timestamp}}\",\n\t\t\t\t\"plan_purchase_date\":\"{{timestamp}}\",\n\t\t\t\t\"invoice_date\":\"{{timestamp}}\",\n\t\t\t    \"price\": \"4999\",\n\t\t\t    \"additional_details\": {\n\t\t\t\t\"payment_id\": \"pay_DiULRXyDRB2gbu\",\n\t\t\t\t\"txn_id\": \"pay_DiULRXyDRB2gbu\",\n\t\t\t\t\"dealer_code\": \"\",\n\t\t\t\t\"version\": \"2.0.71-beta\"\n\t\t\t    },\n\t\t\t    \"channel_name\": \"hdb-spro\",\n\t\t\t    \"onsitego_sku_id\": \"589\",\n\t\t\t    \"plan_price\": \"384.00\",\n\t\t\t    \"category\": \"Mobile Phone\",\n\t\t\t\t\"sub_category\": \"Mobiles\",\n\t\t\t    \t\"to_price\": 5000,\n\t\t\t\t\"from_price\": 0,\n\t\t\t\t\"validity\": 1,\n\t\t\t\t\"validity_unit\": \"Y\",\n\t\t\t    \t\"product_type\": \"Screen Protection\",\n\t\t\t\t\"registered_phone\": \"8940006777\",\n\t\t\t\t\"retailer_role\": \"retailer\",\n\t\t\t    \"model\": \"Zenfone\",\n\t\t\t    \"brand\": \"Asus\",\n\t\t\t    \"manufacturer_warranty_in_months\": 24,\n\t\t\t    \"name\": \"POSTMAN\",\n\t\t\t    \"phone\": \"9597933697\",\n\t\t\t    \"email\": \"haricharan1805@gmail.com\",\n\t\t\t    \"sno\": \"asfd\",\n\t\t\t    \"order_id\": 1649610,\n\t\t\t    \"osid\": \"{{osid}}\",\n\t\t\t    \"documents_uploaded\": [\n\t\t\t\t{\n\t\t\t\t    \"name\": \"Invoice_13Nov191601.jpg\",\n\t\t\t\t    \"type\": \"invoice\"\n\t\t\t\t}\n\t\t\t    ]\n\t\t\t}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://ec2-54-87-249-92.compute-1.amazonaws.com/api/order/edit",
+					"protocol": "http",
+					"host": [
+						"ec2-54-87-249-92",
+						"compute-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"api",
+						"order",
+						"edit"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Cancel_Order",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "cb4c0b08-709a-4af2-84d6-83a0fefded1f",
+						"exec": [
+							"/*TESTS*/",
+							"",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Token ee1c8a0c29dbe163ec5f4984a13e4f31f4aef3b8",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\t\t    \"system_date\": \"{{timestamp}}\",\n\t\t\t    \"reason\": \"Cancelled From API Call\",\n\t\t\t    \"registered_phone\": \"8940006777\",\n\t\t\t    \"retailer_role\": \"retailer\",\n\t\t\t    \"osid\": \"{{osid}}\"\n\t\t\t}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://ec2-54-87-249-92.compute-1.amazonaws.com/api/order/cancel",
+					"protocol": "http",
+					"host": [
+						"ec2-54-87-249-92",
+						"compute-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"api",
+						"order",
+						"cancel"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fetch_Slab_Details",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d17cf8d2-fea6-4017-972b-e8191bc4cdcd",
+						"exec": [
+							"var response=JSON.parse(responseBody);",
+							"pm.environment.set(\"current_structure\", response.plan_sold_in_current_structure);",
+							"",
+							"var struc=response.plan_sold_in_current_structure;",
+							"",
+							"/*TEST*/",
+							"",
+							"pm.test(\"Plans Sold In Current Structure :  \"+struc, function () {",
+							"    pm.expect(pm.response.text()).to.include(\"margin_earned\");",
+							"});",
+							"",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Token ee1c8a0c29dbe163ec5f4984a13e4f31f4aef3b8",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://ec2-54-87-249-92.compute-1.amazonaws.com/api/order/get_slab_details?registered_phone=8940006777&retailer_role=retailer&from_date=2019-10-01&to_date={{timestamp}}",
+					"protocol": "http",
+					"host": [
+						"ec2-54-87-249-92",
+						"compute-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"api",
+						"order",
+						"get_slab_details"
+					],
+					"query": [
+						{
+							"key": "registered_phone",
+							"value": "8940006777"
+						},
+						{
+							"key": "retailer_role",
+							"value": "retailer"
+						},
+						{
+							"key": "from_date",
+							"value": "2019-10-01"
+						},
+						{
+							"key": "to_date",
+							"value": "{{timestamp}}"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "9fc61252-8905-47c5-be52-b878185990f6",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "2d83ee59-6b13-4771-a502-a8ca0ca4071d",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"protocolProfileBehavior": []
+}
